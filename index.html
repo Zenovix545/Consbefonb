@@ -1,0 +1,2147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>🔥 Consistly</title>
+  <meta name="theme-color" content="#6c5ce7">
+  <script>
+    if (location.protocol !== 'file:') {
+      const manifestLink = document.createElement('link');
+      manifestLink.rel = 'manifest';
+      manifestLink.href = 'manifest.json';
+      document.head.appendChild(manifestLink);
+    }
+  </script>
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+  <header class="main-header">
+    <div class="header-left">
+      <button class="ico settings-gear" id="settingsMenuToggle" type="button" aria-label="Settings öffnen"
+        aria-expanded="false">☰</button>
+
+      <h1>🔥 Consistly</h1>
+    </div>
+
+    <button class="ico" data-act="theme" aria-label="Toggle theme">🌓</button>
+  </header>
+  <!-- MENU BACKDROP -->
+  <div id="settingsMenuBackdrop" class="settings-menu-backdrop" hidden></div>
+
+  <!-- HAMBURGER SETTINGS MENU -->
+  <aside id="settingsMenu" class="settings-menu" aria-label="Main menu" aria-hidden="true">
+    <div class="settings-menu-header">
+      <div>
+        <h2>🔥 Consistly</h2>
+        <p>Personalize your app</p>
+      </div>
+
+      <button type="button" id="closeSettingsMenu" class="settings-menu-close" aria-label="Close menu">
+        ✕
+      </button>
+    </div>
+
+
+
+    <div class="settings-menu-content">
+      <button type="button" class="settings-menu-item" data-act="tab" data-v="social">
+        <span class="settings-menu-icon">🌐</span>
+
+        <span class="settings-menu-label">
+          <strong data-i18n="socialPageTitle">Social</strong>
+          <small>Friends, chats and community</small>
+        </span>
+
+        <span class="settings-menu-arrow">›</span>
+      </button>
+      <button type="button" class="settings-menu-item" data-act="tab" data-v="settings">
+        <span class="settings-menu-icon">⚙️</span>
+
+        <span class="settings-menu-label">
+          <strong data-i18n="settings">Settings</strong>
+          <small>Appearance, profile and account</small>
+        </span>
+
+        <span class="settings-menu-arrow">›</span>
+      </button>
+      <button type="button" class="settings-menu-item" data-act="tab" data-v="stats">
+        <span class="settings-menu-icon">📊</span>
+        <span class="settings-menu-label">
+          <strong data-i18n="stats">Stats</strong>
+          <small>Your progress and performance</small>
+        </span>
+        <span class="settings-menu-arrow">›</span>
+      </button>
+      <button type="button" class="settings-menu-item" data-act="tab" data-v="leaderboard">
+        <span class="settings-menu-icon">🏆</span>
+        <span class="settings-menu-label">
+          <strong>Social Leaderboard</strong>
+          <small>Compare XP with friends and players</small>
+        </span>
+        <span class="settings-menu-arrow">›</span>
+      </button>
+      <button type="button" class="settings-menu-item" data-act="tab" data-v="account">
+        <span class="settings-menu-icon">👤</span>
+        <span class="settings-menu-label">
+          <strong>Account</strong>
+          <small>Profile, avatar and cosmetics</small>
+        </span>
+        <span class="settings-menu-arrow">›</span>
+      </button>
+    </div>
+  </aside>
+  <p id="runtimeNotice" class="runtime-notice" role="status" hidden></p>
+  <main>
+    <!-- HOME: consistency -> boss -> today's tasks -->
+    <section id="v-home" class="view">
+      <div class="card hero">
+        <div class="ringwrap">
+          <svg viewBox="0 0 120 120" class="ring">
+            <circle class="trk" cx="60" cy="60" r="52" />
+            <circle id="ringArc" class="arc" cx="60" cy="60" r="52" />
+          </svg>
+          <div class="ringtxt">
+            <div id="wPct" class="big">0%</div>
+            <div class="mu" data-i18n="tw">this week</div>
+          </div>
+        </div>
+        <div class="hs">
+          <div>
+            <span data-i18n="today">Today</span>
+            <b id="dPct">–</b>
+          </div>
+          <div>
+            <span data-i18n="l4w">Last 4 weeks</span>
+            <b id="avg4">–</b>
+          </div>
+          <div id="homeChart" class="chart"></div>
+        </div>
+      </div>
+
+
+      <div class="card boss">
+        <div class="bhead">
+          <div id="bossEmoji" class="bemoji">👹</div>
+          <div class="binfo"><b id="bossName"></b><span id="bossLvl" class="mu"></span>
+            <div class="hp">
+              <div id="hpFill"></div>
+            </div>
+            <small id="hpText" class="mu"></small>
+          </div>
+          <span id="dmg" class="dmg">-1</span>
+        </div>
+        <div class="goalrow"><small id="goalTxt"></small><button class="link" data-act="goal" data-i18n="edy">Edit
+            goal</button></div>
+      </div>
+
+
+      <!-- TODAY -->
+      <h2 data-i18n="today">Today</h2>
+      <div id="todayList"></div>
+
+      <!-- DAILY JOURNAL -->
+      <section class="card daily-journal" aria-labelledby="journalTitle">
+
+        <div class="journal-heading">
+          <div>
+            <h2 id="journalTitle" data-i18n="journalTitle">📓 Daily journal</h2>
+            <p class="settings-desc" data-i18n="journalIntro">
+              A small check-in for today. Your entry is private.
+            </p>
+          </div>
+          <div class="journal-heading-meta">
+            <span id="journalDate" class="journal-date"></span>
+            <span id="journalStreak" class="journal-streak"></span>
+          </div>
+        </div>
+
+        <!-- JOURNAL MODE SELECTOR -->
+        <div class="journal-mode-switch">
+          <button type="button" class="journal-mode-btn active" data-journal-mode="checkin" aria-pressed="true">
+            ⚡ Small Check-in
+          </button>
+
+          <button type="button" class="journal-mode-btn" data-journal-mode="entry" aria-pressed="false">
+            📖 Journal Entry
+          </button>
+        </div>
+
+        <!-- SMALL CHECK-IN -->
+        <div id="journalCheckinPanel">
+          <form id="dailyJournalForm">
+
+            <label for="journalGood" data-i18n="journalGood">
+              What went well today?
+            </label>
+            <textarea id="journalGood" maxlength="2000" rows="2" data-i18n-placeholder="journalGoodPlaceholder"
+              placeholder="Write something that went well…"></textarea>
+
+            <label for="journalTomorrow" data-i18n="journalTomorrow">
+              What can go better tomorrow?
+            </label>
+            <textarea id="journalTomorrow" maxlength="2000" rows="2" data-i18n-placeholder="journalTomorrowPlaceholder"
+              placeholder="One thing you want to improve…"></textarea>
+
+            <label for="journalGrateful" data-i18n="journalGrateful">
+              Things I’m grateful for:
+            </label>
+            <textarea id="journalGrateful" maxlength="2000" rows="2" data-i18n-placeholder="journalGratefulPlaceholder"
+              placeholder="People, moments, or little things…"></textarea>
+
+            <div class="journal-footer">
+              <button type="submit" class="pri" data-i18n="journalSave">
+                Save today’s journal
+              </button>
+              <span id="journalStatus" class="settings-desc" aria-live="polite"></span>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- JOURNAL ENTRY -->
+        <div id="journalEntryPanel" hidden>
+          <form id="journalEntryForm" class="journal-entry-form">
+
+            <label for="journalEntryDate" data-i18n="journalEntryDate">
+              Date and time
+            </label>
+            <input id="journalEntryDate" type="datetime-local" required>
+
+            <label for="journalEntryTitle" data-i18n="journalEntryTitle">
+              Title
+            </label>
+            <input id="journalEntryTitle" maxlength="120" required data-i18n-placeholder="journalEntryTitlePlaceholder"
+              placeholder="Give this entry a title">
+
+            <label for="journalEntryText" data-i18n="journalEntryText">
+              Text
+            </label>
+            <textarea id="journalEntryText" maxlength="10000" rows="5" required
+              data-i18n-placeholder="journalEntryTextPlaceholder" placeholder="Write your journal entry…"></textarea>
+
+            <div class="journal-footer">
+              <button type="submit" class="pri" id="journalEntrySave" data-i18n="journalEntrySave">
+                Save entry
+              </button>
+
+              <button type="button" id="journalEntryCancel" data-i18n="journalEntryCancel" hidden>
+                Cancel edit
+              </button>
+
+              <span id="journalEntryStatus" class="settings-desc" aria-live="polite"></span>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- JOURNAL HISTORY -->
+        <section class="journal-entries-section" aria-labelledby="journalEntriesTitle">
+
+          <div class="journal-entry-heading">
+            <div>
+              <h3 id="journalEntriesTitle" data-i18n="journalEntriesTitle">
+                ✍️ Journal entries
+              </h3>
+              <p class="settings-desc" data-i18n="journalPrivateNote">
+                🔒 Only you can see your journal entries.
+              </p>
+            </div>
+          </div>
+
+          <div class="journal-entry-tools">
+            <input id="journalEntrySearch" type="search" data-i18n-placeholder="journalEntrySearch"
+              placeholder="Search your entries…">
+
+            <label>
+              <input id="journalFavoritesOnly" type="checkbox">
+              <span data-i18n="journalFavoritesOnly">Favorites only</span>
+            </label>
+          </div>
+
+          <div id="journalEntriesList" class="journal-entries-list" aria-live="polite"></div>
+
+        </section>
+
+        <!-- MONTHLY RECAP -->
+        <section class="journal-month-recap" aria-labelledby="journalMonthRecapTitle">
+
+          <div class="journal-recap-heading">
+            <h3 id="journalMonthRecapTitle" data-i18n="journalMonthRecap">
+              🗓️ Monthly recap
+            </h3>
+
+            <div>
+              <button type="button" data-journal-month="-1" aria-label="Previous month">‹</button>
+
+              <span id="journalRecapMonth"></span>
+
+              <button type="button" data-journal-month="1" aria-label="Next month">›</button>
+            </div>
+          </div>
+
+          <div id="journalMonthRecapBody"></div>
+
+        </section>
+
+      </section>
+      <!-- END DAILY JOURNAL -->
+
+    </section>
+    <!-- END HOME VIEW -->
+
+
+    <!-- SHOP VIEW -->
+    <section id="v-shop" class="view" hidden>
+
+      <div class="card">
+        <h2 data-i18n="ps">🪙 Point Shop</h2>
+        <p data-i18n="available">Deine verfügbaren Punkte:</p>
+
+        <div class="card">
+          <small data-i18n="tp">Total points</small>
+          <div class="v" id="shopPoints">0</div>
+
+          <button type="button" id="claimDailyReward" class="daily-shop-reward" data-i18n="dailyRewardButton">
+            🎁 Daily bonus · +10 points
+          </button>
+
+          <p id="dailyRewardStatus" class="settings-desc" aria-live="polite"></p>
+        </div>
+
+        <div class="shop-tools card">
+          <input id="shopSearch" type="search" data-i18n-placeholder="shopSearchPlaceholder"
+            placeholder="Search sounds, themes and titles…">
+
+          <label>
+            <input id="shopOwnedOnly" type="checkbox">
+            <span data-i18n="shopOwnedOnly">Show owned items only</span>
+          </label>
+
+          <select id="shopSort">
+            <option value="featured" data-i18n="shopSortFeatured">Featured</option>
+            <option value="priceUp" data-i18n="shopSortPriceUp">Price: low to high</option>
+            <option value="priceDown" data-i18n="shopSortPriceDown">Price: high to low</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- SOUNDS AND REWARDS -->
+      <section class="shop-category" data-shop-category data-expanded="true">
+
+        <button type="button" class="shop-category-toggle" data-shop-accordion aria-expanded="true">
+          <span data-i18n="shopSectionSounds">🔊 Sounds & rewards</span>
+          <span class="shop-arrow" aria-hidden="true">⌄</span>
+        </button>
+
+        <div class="shop-category-panel">
+          <div class="shop-category-inner">
+
+            <h2 data-i18n="rewards">🎁 Rewards</h2>
+            <div id="shopGrid" class="grid"></div>
+
+            <h2 data-i18n="inventoryTitle">🎒 Dein Inventar</h2>
+            <p class="inventory-hint" data-i18n="inventoryHint">
+              Hier findest du deine gekauften Sounds. Probiere sie aus
+              und rüste deinen Lieblingssound aus.
+            </p>
+
+            <div id="purchasesList"></div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- PURCHASE HISTORY -->
+      <section class="shop-category" data-shop-category data-expanded="false">
+
+        <button type="button" class="shop-category-toggle" data-shop-accordion aria-expanded="false">
+          <span data-i18n="shopSectionPurchaseHistory">🧾 Purchase history</span>
+          <span class="shop-arrow" aria-hidden="true">⌄</span>
+        </button>
+
+        <div class="shop-category-panel">
+          <div class="shop-category-inner">
+            <h2 data-i18n="shopPurchaseHistoryHeading">🧾 Purchase history</h2>
+            <div id="shopPurchaseHistory"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TITLES -->
+      <section class="shop-category" data-shop-category data-expanded="false">
+
+        <button type="button" class="shop-category-toggle" data-shop-accordion aria-expanded="false">
+          <span data-i18n="shopSectionTitles">✨ Titles</span>
+          <span class="shop-arrow" aria-hidden="true">⌄</span>
+        </button>
+
+        <div class="shop-category-panel">
+          <div class="shop-category-inner">
+            <h2 data-i18n="titleShopHeading">✨ Profile titles</h2>
+            <p class="settings-desc" data-i18n="titleShopIntro">
+              Buy a glowing title and show it on your profile.
+            </p>
+
+            <div id="titleShopGrid" class="grid"></div>
+
+            <h2 data-i18n="titleInventoryHeading">✨ Your titles</h2>
+            <div id="titlePurchasesList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- AVATAR FRAMES -->
+      <section class="shop-category" data-shop-category data-expanded="false">
+
+        <button type="button" class="shop-category-toggle" data-shop-accordion aria-expanded="false">
+          <span data-i18n="shopSectionFrames">🖼️ Avatar frames</span>
+          <span class="shop-arrow" aria-hidden="true">⌄</span>
+        </button>
+
+        <div class="shop-category-panel">
+          <div class="shop-category-inner">
+            <h2 data-i18n="avatarFramesHeading">🖼️ Avatar frames</h2>
+            <p class="settings-desc" data-i18n="avatarFramesIntro">
+              Buy a frame, preview it, and equip it on your profile.
+            </p>
+
+            <div id="avatarFrameShopGrid" class="grid"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- THEMES AND STREAK SHIELD -->
+      <section class="shop-category" data-shop-category data-expanded="false">
+
+        <button type="button" class="shop-category-toggle" data-shop-accordion aria-expanded="false">
+          <span data-i18n="shopSectionThemes">🌈 Themes & streak shield</span>
+          <span class="shop-arrow" aria-hidden="true">⌄</span>
+        </button>
+
+        <div class="shop-category-panel">
+          <div class="shop-category-inner">
+            <h2 data-i18n="premiumThemesHeading">
+              🌈 Premium themes & animated glows
+            </h2>
+
+            <p class="settings-desc" data-i18n="premiumThemesIntro">
+              Unlock a theme with points, then equip it in Settings.
+            </p>
+
+            <div id="themeShopGrid" class="grid"></div>
+            <div id="streakShieldShopGrid" class="grid"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- LEVEL-UP EFFECTS -->
+      <section class="shop-category" data-shop-category data-expanded="false">
+
+        <button type="button" class="shop-category-toggle" data-shop-accordion aria-expanded="false">
+          <span data-i18n="shopSectionLevelEffects">⚡ Level-up effects</span>
+          <span class="shop-arrow" aria-hidden="true">⌄</span>
+        </button>
+
+        <div class="shop-category-panel">
+          <div class="shop-category-inner">
+            <h2 id="levelEffectsHeading" class="animation-shop-heading"></h2>
+            <p id="levelEffectsIntro" class="settings-desc"></p>
+            <div id="levelEffectsGrid" class="grid"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ACHIEVEMENT EFFECTS -->
+      <section class="shop-category" data-shop-category data-expanded="false">
+
+        <button type="button" class="shop-category-toggle" data-shop-accordion aria-expanded="false">
+          <span data-i18n="shopSectionAchievementEffects">
+            🏆 Achievement effects
+          </span>
+          <span class="shop-arrow" aria-hidden="true">⌄</span>
+        </button>
+
+        <div class="shop-category-panel">
+          <div class="shop-category-inner">
+            <h2 id="achievementEffectsHeading" class="animation-shop-heading"></h2>
+            <p id="achievementEffectsIntro" class="settings-desc"></p>
+            <div id="achievementEffectsGrid" class="grid"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TEST TIME: NOW INSIDE THE SHOP -->
+      <section class="card test-time-tools" aria-labelledby="testTimeHeading">
+
+        <div>
+          <h2 id="testTimeHeading" data-i18n="testTimeHeading">
+            🧪 Test time
+          </h2>
+
+          <p class="settings-desc" data-i18n="testTimeHint">
+            Advance the app date to test streaks and shields.
+            This only changes the date inside the app.
+          </p>
+
+          <small id="testTimeStatus" aria-live="polite"></small>
+        </div>
+
+        <div class="test-time-buttons">
+          <button type="button" data-test-time="1" data-i18n="testTimeOneDay">+1 day</button>
+
+          <button type="button" data-test-time="7" data-i18n="testTimeSevenDays">+7 days</button>
+
+          <button type="button" data-test-time="30" data-i18n="testTimeThirtyDays">+30 days</button>
+
+          <button type="button" data-test-time="reset" data-i18n="testTimeReset">Reset date</button>
+        </div>
+
+      </section>
+      <!-- END TEST TIME -->
+
+    </section>
+    <!-- END SHOP VIEW -->
+
+
+
+
+    <!-- WEEK -->
+    <section id="v-week" class="view" hidden>
+      <div class="weeknav">
+        <button class="ico" data-act="wk" data-n="-1">‹</button>
+        <div><b id="wkLabel"></b>
+          <div class="mu" id="wkSub"></div>
+        </div>
+        <button class="ico" data-act="wk" data-n="1">›</button>
+      </div>
+      <section class="card journal-week-recap">
+        <div class="journal-recap-heading">
+          <h3 data-i18n="journalWeekRecap">📅 Weekly recap</h3><span id="journalWeekRange"></span>
+        </div>
+        <div id="journalWeekRecapBody"></div>
+      </section>
+      <div id="dayChips" class="chips"></div>
+      <div id="dayList"></div>
+    </section>
+
+
+    <!-- STATS -->
+    <section id="v-stats" class="view" hidden>
+      <div class="stats-level-card card">
+        <div>
+          <small data-i18n="playerLevelLabel">Player level</small>
+          <strong id="playerLevelValue">1</strong>
+        </div>
+        <div class="level-xp-copy">
+          <span id="playerXpText">0 / 100 XP</span>
+          <div class="goal-progress">
+            <span id="playerXpBar" style="width:0%"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid" id="statGrid"></div>
+      <h2 data-i18n="wc">Weekly consistency (last 8 weeks)</h2>
+      <div class="card">
+        <div id="statChart" class="chart big"></div>
+      </div>
+
+      <div class="stats-month-toolbar">
+        <button type="button" data-act="statsMonth" data-n="-1" aria-label="Previous month">‹</button>
+        <h3 id="statsMonthTitle"></h3>
+        <button type="button" data-act="statsMonth" data-n="1" aria-label="Next month">›</button>
+      </div>
+      <div id="statsCalendar" class="stats-calendar" aria-label="Monthly activity"></div>
+    </section>
+
+    <!-- LEADERBOARD -->
+    <section id="v-leaderboard" class="view" hidden>
+      <section class="card social-leaderboard">
+        <div class="social-page-heading">
+          <div>
+            <h3 data-i18n="xpLeaderboard">🏆 XP leaderboard</h3>
+            <p class="settings-desc" data-i18n="xpLeaderboardIntro">
+              Compare levels with the community or your friends.
+            </p>
+          </div>
+
+          <div class="social-leaderboard-tabs">
+            <button type="button" class="active" data-leaderboard-scope="global"
+              data-i18n="leaderboardGlobal">Global</button>
+            <button type="button" data-leaderboard-scope="friends" data-i18n="leaderboardFriends">Friends</button>
+          </div>
+        </div>
+
+        <p id="leaderboardStatus" class="settings-desc" aria-live="polite"></p>
+        <div id="xpLeaderboardList"></div>
+      </section>
+    </section>
+
+
+    <!-- ACCOUNT -->
+    <section id="v-account" class="view" hidden>
+      <div class="settings-group">
+        <h2 data-i18n="profileTitle">👤 Mein Profil</h2>
+
+        <div class="card profile-card">
+          <div class="profile-header">
+            <div class="avatar-upload">
+              <img id="profileAvatarImage" class="profile-avatar-image" alt="Profilbild" hidden>
+
+              <div id="profileAvatar" class="profile-avatar">👤</div>
+
+              <label for="avatarFile" class="avatar-upload-button">
+                <span data-i18n="changePicture">📷 Profilbild ändern</span>
+              </label>
+
+              <input type="file" id="avatarFile" accept="image/png,image/jpeg,image/webp" hidden>
+            </div>
+
+            <p id="avatarUploadMessage"></p>
+
+            <div class="profile-info">
+              <h3 id="profileUsername" data-i18n="usernamePlaceholder">Benutzername</h3>
+              <h4 data-i18n="profileTitleEquipped">✨ Ausgerüsteter Titel</h4>
+              <div id="myEquippedTitle"></div>
+              <p id="profileFriendTag">@friendtag</p>
+              <p id="profileCreatedAt" class="profile-created-at" data-i18n="accountCreatedOn">
+                📅 Account erstellt am: –
+              </p>
+            </div>
+          </div>
+
+          <!-- BIO -->
+          <div class="profile-bio">
+            <h3 data-i18n="aboutMe">✍️ Über mich</h3>
+
+            <textarea id="profileBio" maxlength="160" data-i18n-placeholder="bioPlaceholder"
+              placeholder="Schreib etwas über dich ..." rows="3"></textarea>
+
+            <small data-i18n="max160">Maximal 160 Zeichen</small>
+
+            <button type="button" id="saveProfileBio">
+              <span data-i18n="saveBio">Beschreibung speichern</span>
+            </button>
+
+            <p id="bioMessage"></p>
+          </div>
+
+          <!-- AVATAR -->
+          <h3 data-i18n="chooseAvatar">🎨 Avatar auswählen</h3>
+
+          <!-- DEINE BESTEHENDE AVATAR-AUSWAHL HIER -->
+
+          <p id="profileMessage" class="settings-desc"></p>
+
+          <!-- ACHIEVEMENTS -->
+          <button type="button" id="openAchievements" class="achievements-button">
+            <span data-i18n="achievements">🏆 Achievements</span>
+          </button>
+
+          <div id="achievementPreview" class="achievement-preview" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <!-- APPEARANCE UND THEMES -->
+      <div class="settings-group">
+        <h2 data-i18n="apy">Appearance</h2>
+        <p class="settings-desc" data-i18n="viby">Choose your personal vibe.</p>
+
+        <div class="theme-grid">
+
+          <!-- HIER DEN KOMPLETTEN BISHERIGEN THEMES PART EINFÜGEN -->
+          <!-- ☢️ FALLOUT TERMINAL -->
+          <button class="theme-option" data-skin-choice="falloutterminal">
+            <span class="theme-preview preview-falloutterminal"></span>
+            <span class="theme-info">
+              <b data-i18n="themeFalloutTerminal">Fallout Terminal</b>
+              <small data-i18n="themeFalloutTerminalDesc">Wasteland green · Retro terminal</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+
+          <!-- 🌙 NOCTURNAL -->
+          <button class="theme-option" data-skin-choice="nocturnal">
+            <span class="theme-preview preview-nocturnal"></span>
+            <span class="theme-info">
+              <b data-i18n="themeNocturnal">Nocturnal</b>
+              <small data-i18n="themeNocturnalDesc">Midnight blue · Starlight</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+
+
+
+
+          <!-- ❤️ RUBY -->
+          <button class="theme-option" data-skin-choice="ruby">
+            <span class="theme-preview preview-ruby"></span>
+            <span class="theme-info">
+              <b data-i18n="themeRuby">Ruby</b>
+              <small data-i18n="themeRubyDesc">Deep crimson · Ruby glow</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+
+
+          <!--OBS-->
+          <button class="theme-option" data-skin-choice="obsidiangold" aria-pressed="false">
+            <span class="theme-preview preview-obsidiangold"></span>
+
+            <span class="theme-info">
+              <b data-i18n="themeObsidianGold">Obsidian Gold</b>
+              <small data-i18n="themeObsidianGoldDesc">Black glass · Liquid gold</small>
+            </span>
+
+            <span class="theme-check"></span>
+          </button>
+
+
+
+          <!-- 💜 AMETHYST -->
+          <button class="theme-option" data-skin-choice="amethyst">
+            <span class="theme-preview preview-amethyst"></span>
+            <span class="theme-info">
+              <b data-i18n="themeAmethyst">Amethyst</b>
+              <small data-i18n="themeAmethystDesc">Dark violet · Lavender glow</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+
+          <!-- Cherry Noir -->
+          <button class="theme-option" data-skin-choice="cherrynoir">
+            <span class="theme-preview preview-cherrynoir"></span>
+            <span class="theme-info">
+              <b data-i18n="themeCherryNoir">Cherry Noir</b>
+              <small data-i18n="themeCherryNoirDesc">Cherry red · Dark elegance</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+
+          <!-- Aurora -->
+          <button class="theme-option" data-skin-choice="aurora">
+            <span class="theme-preview preview-aurora"></span>
+            <span class="theme-info">
+              <b data-i18n="themeAurora">Aurora</b>
+              <small data-i18n="themeAuroraDesc">Northern lights · Magical</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+
+          <!-- Synthwave -->
+          <button class="theme-option" data-skin-choice="synthwave">
+            <span class="theme-preview preview-synthwave"></span>
+            <span class="theme-info">
+              <b data-i18n="themeSynthwave">Synthwave</b>
+              <small data-i18n="themeSynthwaveDesc">Neon pink · Retro future</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+
+          <!-- Glacier -->
+          <button class="theme-option" data-skin-choice="glacier">
+            <span class="theme-preview preview-glacier"></span>
+            <span class="theme-info">
+              <b data-i18n="themeGlacier">Glacier</b>
+              <small data-i18n="themeGlacierDesc">Ice blue · Crystal clear</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+
+          <!-- Peach Glow -->
+          <button class="theme-option" data-skin-choice="peachglow">
+            <span class="theme-preview preview-peachglow"></span>
+            <span class="theme-info">
+              <b data-i18n="themePeachGlow">Peach Glow</b>
+              <small data-i18n="themePeachGlowDesc">Peach · Warm and cozy</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+          <button class="theme-option" data-skin-choice="sakura">
+            <span class="theme-preview preview-sakura"></span>
+            <span class="theme-info">
+              <b data-i18n="themeSakura">Sakura</b>
+              <small data-i18n="themeSakuraDesc">Soft blossom · Calm and bright</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+          <button class="theme-option" data-skin-choice="deepspace">
+            <span class="theme-preview preview-deepspace"></span>
+            <span class="theme-info">
+              <b data-i18n="themeDeepSpace">Deep Space</b>
+              <small data-i18n="themeDeepSpaceDesc">Cosmic blue · Starlit</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+          <button class="theme-option" data-skin-choice="matcha">
+            <span class="theme-preview preview-matcha"></span>
+            <span class="theme-info">
+              <b data-i18n="themeMatcha">Matcha</b>
+              <small data-i18n="themeMatchaDesc">Fresh green · Calm and natural</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+          <button class="theme-option" data-skin-choice="midnight">
+            <span class="theme-preview preview-midnight"></span>
+            <span class="theme-info">
+              <b data-i18n="themeMidnight">Midnight</b>
+              <small data-i18n="themeMidnightDesc">Deep purple · Dark</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+
+          <button class="theme-option" data-skin-choice="ocean">
+            <span class="theme-preview preview-ocean"></span>
+            <span class="theme-info">
+              <b data-i18n="themeOcean">Ocean</b>
+              <small data-i18n="themeOceanDesc">Cool blue · Calm</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+
+          <button class="theme-option" data-skin-choice="forest">
+            <span class="theme-preview preview-forest"></span>
+            <span class="theme-info">
+              <b data-i18n="themeForest">Forest</b>
+              <small data-i18n="themeForestDesc">Sage green · Natural</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+
+          <button class="theme-option" data-skin-choice="sunset">
+            <span class="theme-preview preview-sunset"></span>
+            <span class="theme-info">
+              <b data-i18n="themeSunset">Sunset</b>
+              <small data-i18n="themeSunsetDesc">Warm coral · Soft</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+
+          <button class="theme-option" data-skin-choice="lavender">
+            <span class="theme-preview preview-lavender"></span>
+            <span class="theme-info">
+              <b data-i18n="themeLavender">Lavender</b>
+              <small data-i18n="themeLavenderDesc">Pastel violet · Dreamy</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+
+          <button class="theme-option" data-skin-choice="paper">
+            <span class="theme-preview preview-paper"></span>
+            <span class="theme-info">
+              <b data-i18n="themePaper">Paper</b>
+              <small data-i18n="themePaperDesc">Warm cream · Minimal</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+
+          <button class="theme-option" data-skin-choice="neon">
+            <span class="theme-preview preview-neon"></span>
+            <span class="theme-info">
+              <b data-i18n="themeNeon">Neon</b>
+              <small data-i18n="themeNeonDesc">Black · Electric green</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+
+          <button class="theme-option" data-skin-choice="rose">
+            <span class="theme-preview preview-rose"></span>
+            <span class="theme-info">
+              <b data-i18n="themeRose">Rose</b>
+              <small data-i18n="themeRoseDesc">Soft pink · Cozy</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+
+          <button class="theme-option" data-skin-choice="arctic">
+            <span class="theme-preview preview-arctic"></span>
+            <span class="theme-info">
+              <b data-i18n="themeArctic">Arctic</b>
+              <small data-i18n="themeArcticDesc">Ice blue · Fresh</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+
+          <button class="theme-option" data-skin-choice="golden">
+            <span class="theme-preview preview-golden"></span>
+            <span class="theme-info">
+              <b data-i18n="themeGolden">Golden</b>
+              <small data-i18n="themeGoldenDesc">Warm gold · Cozy</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+          <button class="theme-option" data-skin-choice="coralreef">
+            <span class="theme-preview preview-coralreef"></span>
+            <span class="theme-info">
+              <b data-i18n="themeCoralReef">Coral Reef</b>
+              <small data-i18n="themeCoralReefDesc">Tropical teal · Coral glow</small>
+            </span>
+            <span class="theme-check"></span>
+          </button>
+          <button class="theme-option" data-skin-choice="cyberpunk">
+            <span class="theme-preview preview-cyberpunk"></span>
+            <span class="theme-info"><b data-i18n="themeCyberpunk">Cyberpunk</b><small
+                data-i18n="themeCyberpunkDesc">Neon cyan · Electric night</small></span>
+            <span class="theme-check"></span>
+          </button>
+          <button class="theme-option" data-skin-choice="ember">
+            <span class="theme-preview preview-ember"></span>
+            <span class="theme-info"><b data-i18n="themeEmber">Ember</b><small data-i18n="themeEmberDesc">Molten
+                orange
+                · Warm charcoal</small></span>
+            <span class="theme-check"></span>
+          </button>
+          <button class="theme-option" data-skin-choice="toxicbloom">
+            <span class="theme-preview preview-toxicbloom"></span><span class="theme-info"><b
+                data-i18n="themeToxicBloom">Toxic Bloom</b><small data-i18n="themeToxicBloomDesc">Poison green ·
+                Dark
+                garden</small></span>
+            <span class="theme-premium-lock" data-theme-lock="toxicbloom">🔒 420 🪙</span><span
+              class="theme-check"></span>
+          </button>
+          <button class="theme-option" data-skin-choice="bloodmoon">
+            <span class="theme-preview preview-bloodmoon"></span><span class="theme-info"><b
+                data-i18n="themeBloodMoon">Blood Moon</b><small data-i18n="themeBloodMoonDesc">Crimson red · Lunar
+                night</small></span>
+            <span class="theme-premium-lock" data-theme-lock="bloodmoon">🔒 420 🪙</span><span
+              class="theme-check"></span>
+          </button>
+          <button class="theme-option" data-skin-choice="hologram">
+            <span class="theme-preview preview-hologram"></span><span class="theme-info"><b
+                data-i18n="themeHologram">Hologram</b><small data-i18n="themeHologramDesc">Iridescent cyan ·
+                Chrome</small></span>
+            <span class="theme-premium-lock" data-theme-lock="hologram">🔒 480 🪙</span><span
+              class="theme-check"></span>
+          </button>
+          <button class="theme-option" data-skin-choice="volcanicash">
+            <span class="theme-preview preview-volcanicash"></span><span class="theme-info"><b
+                data-i18n="themeVolcanicAsh">Volcanic Ash</b><small data-i18n="themeVolcanicAshDesc">Charcoal · Lava
+                glow</small></span>
+            <span class="theme-premium-lock" data-theme-lock="volcanicash">🔒 480 🪙</span><span
+              class="theme-check"></span>
+          </button>
+          <button class="theme-option" data-skin-choice="enchantedforest">
+            <span class="theme-preview preview-enchantedforest"></span><span class="theme-info"><b
+                data-i18n="themeEnchantedForest">Enchanted Forest</b><small data-i18n="themeEnchantedForestDesc">Deep
+                green · Fireflies</small></span>
+            <span class="theme-premium-lock" data-theme-lock="enchantedforest">🔒 500 🪙</span><span
+              class="theme-check"></span>
+          </button>
+          <button class="theme-option" data-skin-choice="nebuladrift">
+            <span class="theme-preview preview-nebuladrift"></span><span class="theme-info"><b
+                data-i18n="themeNebulaDrift">Nebula Drift</b><small data-i18n="themeNebulaDriftDesc">Animated violet
+                cosmic glow</small></span>
+            <span class="theme-premium-lock" data-theme-lock="nebuladrift">🔒 560 🪙</span><span
+              class="theme-check"></span>
+          </button>
+          <button class="theme-option" data-skin-choice="auroraflow">
+            <span class="theme-preview preview-auroraflow"></span><span class="theme-info"><b
+                data-i18n="themeAuroraFlow">Aurora Flow</b><small data-i18n="themeAuroraFlowDesc">Animated green
+                aurora
+                glow</small></span>
+            <span class="theme-premium-lock" data-theme-lock="auroraflow">🔒 560 🪙</span><span
+              class="theme-check"></span>
+          </button>
+          <button class="theme-option" data-skin-choice="lavapulse">
+            <span class="theme-preview preview-lavapulse"></span><span class="theme-info"><b
+                data-i18n="themeLavaPulse">Lava Pulse</b><small data-i18n="themeLavaPulseDesc">Animated molten
+                orange
+                glow</small></span>
+            <span class="theme-premium-lock" data-theme-lock="lavapulse">🔒 560 🪙</span><span
+              class="theme-check"></span>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- SETTINGS -->
+    <section id="v-settings" class="view" hidden>
+
+      <h2 data-i18n="settingsTitle">Settings</h2>
+      <div class="card" id="accountCard">
+        <h3 data-i18n="accountTitle">👤 Consistly Account</h3>
+
+        <p id="authStatus">Nicht angemeldet</p>
+
+        <button type="button" id="openAuth" data-act="openAuth">
+          <span data-i18n="loginRegister">Login / Registrieren</span>
+        </button>
+        <button type="button" id="forgotPassword">
+          <span data-i18n="forgotPassword">Passwort vergessen?</span>
+        </button>
+        <button type="button" id="logoutBtn" data-act="logout" hidden>
+          <span data-i18n="logout">Abmelden</span>
+        </button>
+        <button type="button" id="deleteAccountBtn" class="danger-button" hidden>
+          <span data-i18n="deleteAccount">Konto dauerhaft löschen</span>
+        </button>
+      </div>
+      <div class="settings-group">
+        <h2 data-i18n="soundLabel">🔊 Satisfying sound</h2>
+        <div class="card">
+          <label class="sound-switch">
+            <input type="checkbox" id="soundToggle" checked>
+            <span data-i18n="souny">Sound enabled</span>
+          </label>
+        </div>
+      </div>
+
+
+
+      <div class="settings-group">
+        <h2 data-i18n="friendProgressSharingTitle">🤝 Fortschritt mit Freunden</h2>
+        <div class="card">
+          <label class="reminder-toggle">
+            <input type="checkbox" id="shareProgressWithFriends">
+            <span data-i18n="shareProgressWithFriendsLabel">Bestätigte Freunde dürfen meine Aufgaben und Statistiken
+              ansehen</span>
+          </label>
+          <p id="shareProgressStatus" class="settings-desc" data-i18n="shareProgressPrivateDefault">Standardmäßig
+            privat.
+            Du kannst das jederzeit ändern.</p>
+        </div>
+        <div class="card privacy-settings-card">
+          <label class="reminder-toggle"><input type="checkbox" id="publicProfileEnabled"><span
+              data-i18n="publicProfileToggle">Make my profile and posts public</span></label>
+          <p class="settings-desc" data-i18n="publicProfilePrivacyNote">Only turn this on if you want anyone to see
+            your
+            profile and posts.</p>
+          <label class="reminder-toggle"><input type="checkbox" id="messageNotificationsEnabled"><span
+              data-i18n="messageNotificationsToggle">Notify me about new messages</span></label>
+          <p id="messageNotificationsStatus" class="settings-desc" data-i18n="notificationForegroundNote">
+            Notifications
+            work while the app is open; browser permission is required.</p>
+        </div>
+      </div>
+      <div class="settings-group">
+        <h2 data-i18n="accessibilityTitle">♿ Anzeige & Barrierefreiheit</h2>
+        <div class="card settings-accessibility">
+          <label class="reminder-toggle"><input type="checkbox" id="largeTextToggle"><span
+              data-i18n="largeTextLabel">Größere Schrift</span></label>
+          <label class="reminder-toggle"><input type="checkbox" id="reduceMotionToggle"><span
+              data-i18n="reduceMotionLabel">Bewegungen reduzieren</span></label>
+          <label class="reminder-toggle"><input type="checkbox" id="highContrastToggle"><span
+              data-i18n="highContrastLabel">Hohen Kontrast</span></label>
+          <button type="button" id="exportAppData" data-i18n="exportDataButton">⬇️ Meine Daten
+            herunterladen</button>
+          <p id="settingsToolsStatus" class="settings-desc" aria-live="polite"></p>
+        </div>
+      </div>
+
+
+      </div>
+
+      <section id="moderationPanel" class="settings-group moderation-panel" hidden>
+        <h2 data-i18n="moderationReports">🛡️ Moderationsmeldungen</h2>
+        <p class="settings-desc" data-i18n="adminReportsIntro">Private Chatmeldungen für Admins.</p>
+        <button type="button" id="refreshReports" data-i18n="refreshReports">🔄 Meldungen aktualisieren</button>
+        <p id="moderationStatus" class="settings-desc" aria-live="polite"></p>
+        <div id="moderationReports"></div>
+        <h3 data-i18n="activeRestrictionsHeading">Aktive Timeouts und Sperren</h3>
+        <div id="activeRestrictions"></div>
+        <h3 data-i18n="moderationAppealsHeading">🧾 Appeals</h3>
+        <div id="moderationAppeals"></div>
+        <h3 data-i18n="spamDetectionsHeading">🚨 Automated spam detections</h3>
+        <div id="automatedSpamEvents"></div>
+      </section>
+      <section class="settings-group">
+        <h2 data-i18n="reportHistoryHeading">📋 My report history</h2>
+        <div id="myReportHistory"></div>
+        <h2 data-i18n="myModerationHistoryHeading">🛡️ Moderation decisions & appeals</h2>
+        <div id="myModerationHistory"></div>
+      </section>
+      <p id="restrictionAppealNotice" class="settings-desc moderation-restriction-notice" hidden></p>
+      <section class="settings-group account-notices-group">
+        <h2 data-i18n="accountNotices">⚠️ Kontohinweise</h2>
+        <div id="accountNotices">
+          <p data-i18n="noAccountNotices">Keine Kontohinweise.</p>
+        </div>
+      </section>
+      <div class="settings-group">
+
+
+        <div class="card">
+          <label for="languageSelect" data-i18n="languageLabel">
+            Language
+          </label>
+
+          <select id="languageSelect">
+            <option value="en">🇬🇧 ENG</option>
+            <option value="de">🇩🇪 DEU</option>
+            <option value="es">🇪🇸 ESP</option>
+            <option value="it">🇮🇹 ITA</option>
+            <option value="el">🇬🇷 ΕΛΛ</option>
+            <option value="pt">🇵🇹 POR</option>
+          </select>
+        </div>
+
+        <div class="settings-group">
+          <h2 data-i18n="remindersTitle">🔔 Erinnerungen</h2>
+          <p class="settings-desc" data-i18n="remindersIntro">
+            Lass dich täglich zur gewünschten Uhrzeit an deine Habits erinnern.
+          </p>
+
+          <label class="reminder-toggle">
+            <input type="checkbox" id="remindersEnabled">
+            <span data-i18n="remindersEnable">Tägliche Erinnerung aktivieren</span>
+          </label>
+
+          <div class="reminder-time-setting">
+            <label for="reminderTime" data-i18n="reminderTime">Erinnerungszeit</label>
+            <input type="time" id="reminderTime" value="18:00">
+          </div>
+          <button type="button" id="testReminder">
+            <span data-i18n="testReminder">🔔 Test-Benachrichtigung senden</span>
+          </button>
+          <button type="button" id="saveReminderSettings">
+            <span data-i18n="saveReminderSettings">💾 Erinnerungseinstellungen speichern</span>
+          </button>
+
+          <p id="reminderStatus" class="settings-desc" aria-live="polite"></p>
+        </div>
+
+        <div class="settings-group">
+          <h3 data-i18n="journalReminderTitle">📓 Journal reminder</h3>
+          <p class="settings-desc" data-i18n="journalReminderIntro">A daily nudge if you have not written an entry
+            yet.
+            Works while the app is open.</p>
+          <label class="reminder-toggle"><input type="checkbox" id="journalReminderEnabled"><span
+              data-i18n="journalReminderEnable">Remind me to journal</span></label>
+          <div class="reminder-time-setting"><label for="journalReminderTime" data-i18n="journalReminderTime">Reminder
+              time</label><input type="time" id="journalReminderTime" value="20:00"></div>
+          <button type="button" id="saveJournalReminder" data-i18n="journalReminderSave">💾 Save journal
+            reminder</button>
+          <button type="button" id="testJournalReminder" data-i18n="testReminder">🔔 Test notification</button>
+          <p id="journalReminderStatus" class="settings-desc" aria-live="polite"></p>
+        </div>
+
+        <div class="settings-group">
+          <h2 data-i18n="quietHoursTitle">🌙 Ruhezeiten</h2>
+          <p class="settings-desc" data-i18n="quietHoursIntro">
+            Während dieser Zeit bekommst du keine Habit-Erinnerungen.
+          </p>
+
+          <label class="reminder-toggle">
+            <input type="checkbox" id="quietHoursEnabled">
+            <span data-i18n="quietHoursEnable">Ruhezeiten aktivieren</span>
+          </label>
+
+          <div class="reminder-time-setting">
+            <label for="quietHoursStart" data-i18n="quietStart">Ruhezeit beginnt</label>
+            <input type="time" id="quietHoursStart" value="22:00">
+
+            <label for="quietHoursEnd" data-i18n="quietEnd">Ruhezeit endet</label>
+            <input type="time" id="quietHoursEnd" value="08:00">
+          </div>
+
+          <button type="button" id="saveQuietHours">
+            <span data-i18n="saveQuietHours">💾 Ruhezeiten speichern</span>
+          </button>
+
+          <p id="quietHoursStatus" class="settings-desc" aria-live="polite"></p>
+        </div>
+        <!-- HIER DEINE ANDEREN SETTINGS EINFÜGEN -->
+        <!-- KEINE THEMES MEHR HIER -->
+
+    </section>
+
+
+    <section id="v-social" class="view" hidden>
+
+      <!-- SOCIAL HEADER -->
+      <div class="social-page-heading">
+        <div>
+          <h2 data-i18n="socialPageTitle">🌐 Social</h2>
+          <p class="settings-desc" data-i18n="socialPageIntro">
+            Friends, shared goals and community posts.
+          </p>
+        </div>
+      </div>
+
+      <!-- FRIENDS & CHATS -->
+      <section class="card friends-home-card social-mobile-card">
+
+        <div class="friends-home-header">
+          <div>
+            <h3 data-i18n="friendsTitle">👥 Friends</h3>
+            <p class="settings-desc" data-i18n="friendsHomeIntro">
+              Finde Freunde und verfolge eure Fortschritte gemeinsam.
+            </p>
+          </div>
+        </div>
+
+        <div class="social-friends-actions">
+
+          <button type="button" data-act="openFriends">
+            👥 <span data-i18n="friendsTitle">Friends</span>
+          </button>
+
+          <button type="button" data-act="openSocial">
+            💬 <span data-i18n="openChat">Open chats</span>
+          </button>
+
+          <button type="button" data-act="openFriends" data-i18n="searchUsers">
+            🔎 Benutzer suchen
+          </button>
+
+          <button type="button" data-act="openFriendRequests">
+            <span data-i18n="friendRequests">Friend requests</span>
+            <span id="friendRequestCount">0</span>
+          </button>
+
+          <button type="button" data-act="openSocialGroups">
+            <span data-i18n="socialGroupsTitle">Groups</span>
+          </button>
+
+        </div>
+
+        <div id="friendsPreview"></div>
+
+      </section>
+
+
+      <!-- COMMUNITY -->
+      <div class="social-community-stack">
+
+        <!-- COMMUNITY FEED -->
+        <section class="card social-feed-panel social-mobile-card">
+
+          <div class="social-feed-header">
+            <h3 data-i18n="communityFeed">📰 Community feed</h3>
+
+            <button type="button" id="toggleSocialFeed" class="social-feed-toggle" aria-expanded="true"
+              aria-controls="socialFeedContent">
+              Einklappen ▲
+            </button>
+          </div>
+
+          <div id="socialFeedContent">
+
+            <div class="social-feed-toolbar">
+
+              <div class="social-feed-filters" role="tablist" aria-label="Feed filter">
+
+                <button type="button" class="active" data-feed-filter="explore" data-i18n="feedExplore">
+                  🌐 Explore Feed
+                </button>
+
+                <button type="button" data-feed-filter="latest" data-i18n="feedNewest">
+                  Neueste
+                </button>
+
+                <button type="button" data-feed-filter="following" data-i18n="feedFollowing">
+                  Following
+                </button>
+
+                <button type="button" data-feed-filter="popular" data-i18n="feedPopular">
+                  🔥 Beliebt
+                </button>
+
+                <button type="button" data-feed-filter="friends" data-i18n="feedFriends">
+                  Freunde
+                </button>
+
+                <button type="button" data-feed-filter="mine" data-i18n="feedMine">
+                  Meine Beiträge
+                </button>
+
+                <button type="button" data-feed-filter="saved" data-i18n="socialSavedPosts">
+                  🔖 Gespeichert
+                </button>
+
+              </div>
+
+              <button type="button" id="refreshSocialFeed" data-i18n="refreshFeed">
+                ↻ Aktualisieren
+              </button>
+
+            </div>
+
+
+            <!-- CREATE POST -->
+            <form id="socialPostForm" class="social-post-form">
+
+              <textarea id="socialPostContent" maxlength="1000" rows="3" data-i18n-placeholder="socialPostPlaceholder"
+                placeholder="Share something with the community..." required></textarea>
+
+              <div class="social-poll-composer">
+
+                <div class="social-poll-type-field">
+                  <label for="socialPollType" data-i18n="socialPollTypeLabel">
+                    Add a poll
+                  </label>
+
+                  <select id="socialPollType">
+                    <option value="none" data-i18n="socialPollNone">No poll</option>
+                    <option value="single" data-i18n="socialPollSingle">Single choice</option>
+                    <option value="multiple" data-i18n="socialPollMultiple">Multiple choice</option>
+                    <option value="yes_no" data-i18n="socialPollYesNo">Yes / No</option>
+                  </select>
+                </div>
+
+                <div id="socialPollOptionsWrap" hidden>
+                  <label for="socialPollOptions" data-i18n="socialPollOptionsLabel">
+                    Answer options
+                  </label>
+
+                  <textarea id="socialPollOptions" rows="3" maxlength="500"
+                    data-i18n-placeholder="socialPollOptionsPlaceholder" placeholder="One option per line"></textarea>
+
+                  <small data-i18n="socialPollOptionsHint">
+                    Enter 2 to 6 options, one per line.
+                  </small>
+                </div>
+
+                <div id="socialPollDurationWrap" hidden>
+                  <label for="socialPollDuration" data-i18n="socialPollDurationLabel">
+                    Poll duration
+                  </label>
+
+                  <select id="socialPollDuration">
+                    <option value="never" data-i18n="socialPollNoExpiry">No expiry</option>
+                    <option value="24h" data-i18n="socialPoll24h">24 hours</option>
+                    <option value="7d" data-i18n="socialPoll7d">7 days</option>
+                  </select>
+                </div>
+
+              </div>
+
+              <div class="social-post-submit-row">
+                <small id="socialPostCount">0/1000</small>
+                <button type="submit" class="pri" data-i18n="publishPost">
+                  Publish
+                </button>
+              </div>
+
+            </form>
+
+            <p id="socialFeedStatus" class="settings-desc" aria-live="polite"></p>
+
+            <div id="socialFeed" class="social-feed-list">
+              <p data-i18n="feedLoading">Loading posts...</p>
+            </div>
+
+          </div>
+        </section>
+
+
+        <!-- SHARED GOALS -->
+
+        <section class="card shared-goals-panel social-mobile-card">
+
+          <div class="social-section-heading">
+            <div>
+              <h3 data-i18n="sharedGoalsTitle">🎯 Shared goals</h3>
+              <p class="settings-desc">
+                Work toward goals together with your friends.
+              </p>
+            </div>
+
+            <button type="button" id="toggleSharedGoals" aria-expanded="true" aria-controls="sharedGoalsContent"
+              class="shared-goals-toggle">
+              Einklappen ▲
+            </button>
+          </div>
+
+          <div id="sharedGoalsContent">
+
+            <form id="sharedGoalForm" class="shared-goal-form">
+
+              <input id="sharedGoalTitle" maxlength="80" data-i18n-placeholder="sharedGoalTitlePlaceholder"
+                placeholder="Goal name" required>
+
+              <textarea id="sharedGoalDescription" maxlength="300" rows="2"
+                data-i18n-placeholder="sharedGoalDescriptionPlaceholder"
+                placeholder="What will you work on together?"></textarea>
+
+              <label for="sharedGoalFriend" data-i18n="goalFriendLabel">
+                Friend
+              </label>
+
+              <select id="sharedGoalFriend" required>
+                <option value="" data-i18n="chooseFriend">Choose a friend</option>
+              </select>
+
+              <label for="sharedGoalTarget" data-i18n="goalTargetLabel">
+                Shared target (check-ins)
+              </label>
+
+              <input id="sharedGoalTarget" type="number" min="1" max="1000" value="7" required>
+
+              <label for="sharedGoalDate" data-i18n="goalDeadlineLabel">
+                Target date
+              </label>
+
+              <input id="sharedGoalDate" type="date" required>
+
+              <button type="submit" class="pri" data-i18n="createSharedGoal">
+                Create shared goal
+              </button>
+
+            </form>
+
+            <p id="sharedGoalsStatus" class="settings-desc" aria-live="polite"></p>
+
+            <div id="sharedGoalsList"></div>
+
+          </div>
+        </section>
+
+
+      </div>
+
+
+      <!-- GROUPS -->
+      <section class="card social-groups-panel social-mobile-card">
+
+        <div class="social-page-heading">
+          <div>
+            <h3 data-i18n="socialGroupsTitle">👥 Groups</h3>
+            <p class="settings-desc" data-i18n="socialGroupsIntro">
+              Create group chats with friends and work toward shared goals.
+            </p>
+          </div>
+        </div>
+
+        <form id="createSocialGroupForm" class="social-group-create-form">
+
+          <label for="socialGroupName" data-i18n="socialGroupNameLabel">
+            Group name
+          </label>
+
+          <input id="socialGroupName" maxlength="60" required data-i18n-placeholder="socialGroupNamePlaceholder"
+            placeholder="Name your group">
+
+          <label for="socialGroupMembers" data-i18n="socialGroupMembersLabel">
+            Invite friends
+          </label>
+
+          <select id="socialGroupMembers" multiple size="4" required aria-describedby="socialGroupMembersHint"></select>
+
+          <small id="socialGroupMembersHint" data-i18n="socialGroupMembersHint">
+            Select at least one confirmed friend.
+          </small>
+
+          <button type="submit" class="pri" data-i18n="socialCreateGroup">
+            Create group
+          </button>
+
+        </form>
+
+        <p id="socialGroupsStatus" class="settings-desc" aria-live="polite"></p>
+
+        <div id="socialGroupCards" class="social-group-cards"></div>
+
+      </section>
+
+    </section>
+
+
+
+
+
+    </section>
+    <!-- BOSS COLLECTION -->
+    <section id="v-bosses" class="view" hidden>
+      <h2 data-i18n="bcx">Boss collection</h2>
+      <div class="boss-tower card">
+        <div><span data-i18n="bossTowerFloor">Boss tower · Floor</span> <strong id="bossTowerFloorValue">1</strong>
+        </div>
+        <p id="bossTowerReward" class="settings-desc"></p>
+      </div>
+      <div id="bossGrid" class="grid"></div>
+    </section>
+  </main>
+
+  <button class="fab" data-act="add" aria-label="Add task">+</button>
+  <nav>
+    <button data-act="tab" data-v="home" class="on">🏠<span data-i18n="home">Home</span></button>
+    <button data-act="tab" data-v="week">📅<span data-i18n="week">Week</span></button>
+    <button data-act="tab" data-v="bosses">🏆<span data-i18n="bosses">Bosses</span></button>
+
+    <button data-act="tab" data-v="shop">
+      🛒<span data-i18n="shoop">Shop</span>
+    </button>
+
+  </nav>
+
+
+  <dialog id="taskDlg">
+    <h3 id="tHead" data-i18n="nt">New task</h3>
+
+    <div class="task-mode-switch">
+      <button type="button" class="pri" data-act="taskMode" data-mode="custom">
+        Custom Task
+      </button>
+      <button type="button" data-act="taskMode" data-mode="templates">
+        Templates
+      </button>
+    </div>
+
+    <div id="customTaskView">
+      <input id="tTitle" placeholder="Task title" data-i18n-placeholder="taskTitlePlaceholder" maxlength="80">
+
+      <input id="tCat" placeholder="Category (optional)" data-i18n-placeholder="taskCategoryPlaceholder" maxlength="30">
+
+
+      <div class="task-color-settings">
+        <label class="task-color-toggle" for="tColorEnabled">
+          <span class="task-color-icon">🎨</span>
+
+          <span class="task-color-text">
+            <strong>Eigene Aufgabenfarbe</strong>
+            <small>Gib dieser Aufgabe einen eigenen Look</small>
+          </span>
+
+          <input type="checkbox" id="tColorEnabled" class="color-toggle-input">
+          <span class="color-toggle-switch"></span>
+        </label>
+
+        <div class="task-color-picker" id="taskColorPicker" hidden>
+          <div class="task-color-preview">
+            <span id="taskColorPreview"></span>
+            <div>
+              <strong>Deine Farbe</strong>
+              <small id="taskColorHex">#8B5CF6</small>
+            </div>
+          </div>
+
+          <input type="color" id="tColor" value="#8b5cf6" aria-label="Aufgabenfarbe auswählen">
+        </div>
+      </div>
+
+
+      <select id="tRep">
+        <option value="once" data-i18n="once">One-time</option>
+        <option value="daily" data-i18n="dai">Every day</option>
+        <option value="days" data-i18n="spec">Specific weekdays</option>
+      </select>
+
+      <input id="tDate" type="date">
+      <div id="tDays" class="daysel"></div>
+
+      <div class="habit-reminder-settings">
+        <label>
+          <input type="checkbox" id="tReminderEnabled">
+          🔔 Enable reminder for this habit
+        </label>
+        <label for="tReminderTime">Reminder time</label>
+        <input type="time" id="tReminderTime" value="18:00">
+        <small>You can set a different time for every habit.</small>
+      </div>
+    </div>
+
+    <div id="templateView" hidden>
+      <p>Choose habits or complete routines.</p>
+      <div class="template-search">
+        <span class="template-search-icon">⌕</span>
+        <input type="search" id="templateSearch" placeholder="Search templates..." autocomplete="off"
+          aria-label="Search templates">
+      </div>
+      <div class="template-filter-bar">
+        <button type="button" id="recentlyAddedBtn" class="recently-added-btn">
+          <span>✨</span>
+          <span>Recently Added</span>
+          <span class="recently-added-badge">4</span>
+          <span>⌄</span>
+        </button>
+      </div>
+      <details class="template-favorites-section" id="templateFavoritesSection">
+        <summary class="template-favorites-header">
+          <span class="template-favorites-title">
+            <span>⭐</span>
+            <span>Favorites</span>
+            <span class="template-favorites-count" id="templateFavoritesCount">0</span>
+          </span>
+          <span class="template-favorites-arrow">⌄</span>
+        </summary>
+
+        <div id="templateFavoritesList"></div>
+      </details>
+
+
+      <div class="template-list">
+
+
+        <details class="template-category">
+          <summary>🌅 Morning Routine</summary>
+          <div class="template-category-content">
+            <label><input type="checkbox" value="Open the curtains" data-template><span class="template-item-text">Open
+                the curtains<small>Let natural light into your room to start the day.</small></span></label>
+            <label><input type="checkbox" value="Brush my teeth" data-template><span class="template-item-text">Brush my
+                teeth<small>Keep up with your daily dental hygiene.</small></span></label>
+            <label><input type="checkbox" value="Wash my face" data-template><span class="template-item-text">Wash my
+                face<small>Freshen up and start the morning feeling refreshed.</small></span></label>
+            <label><input type="checkbox" value="Get dressed" data-template><span class="template-item-text">Get
+                dressed<small>Choose clothes suitable for your day.</small></span></label>
+            <label><input type="checkbox" value="Eat breakfast" data-template><span class="template-item-text">Eat
+                breakfast<small>Have a nourishing meal to begin your day.</small></span></label>
+            <label><input type="checkbox" value="Stretch in the morning" data-template><span
+                class="template-item-text">Stretch in the morning<small>Take a few minutes to gently loosen
+                  up.</small></span></label>
+            <label><input type="checkbox" value="Review my daily goals" data-template><span
+                class="template-item-text">Review my daily goals<small>Remind yourself what you want to accomplish
+                  today.</small></span></label>
+            <label><input type="checkbox" value="Make my bed" data-template><span class="template-item-text">Make my
+                bed<small>Tidy your bed after getting up.</small></span></label>
+            <label><input type="checkbox" value="Check my calendar" data-template><span class="template-item-text">Check
+                my calendar<small>Look at today's appointments and plans.</small></span></label>
+          </div>
+        </details>
+
+        <details class="template-category">
+          <summary>💚 Health & Wellness</summary>
+          <div class="template-category-content">
+            <label><input type="checkbox" value="Take a screen break" data-template><span
+                class="template-item-text">Take a screen break<small>Step away from screens for a little
+                  while.</small></span></label>
+            <label><input type="checkbox" value="Spend time outside" data-template><span
+                class="template-item-text">Spend time outside<small>Get some fresh air and enjoy the
+                  outdoors.</small></span></label>
+            <label><input type="checkbox" value="Do a relaxing activity" data-template><span
+                class="template-item-text">Do a relaxing activity<small>Make time for something that helps you
+                  unwind.</small></span></label>
+            <label><input type="checkbox" value="Take care of my hygiene" data-template><span
+                class="template-item-text">Take care of my hygiene<small>Keep up with your everyday personal
+                  care.</small></span></label>
+            <label><input type="checkbox" value="Eat a balanced meal" data-template><span class="template-item-text">Eat
+                a balanced meal<small>Include a variety of foods in your meal.</small></span></label>
+            <label><input type="checkbox" value="Practice good posture" data-template><span
+                class="template-item-text">Practice good posture<small>Be mindful of your posture while sitting or
+                  standing.</small></span></label>
+            <label><input type="checkbox" value="Have a calming evening" data-template><span
+                class="template-item-text">Have a calming evening<small>Slow down and make time to relax before
+                  bed.</small></span></label>
+            <label><input type="checkbox" value="Refill my water bottle" data-template><span
+                class="template-item-text">Refill my water bottle<small>Make sure you have water available throughout
+                  the day.</small></span></label>
+            <label><input type="checkbox" value="Take a movement break" data-template><span
+                class="template-item-text">Take a movement break<small>Get up and move around after sitting for a
+                  while.</small></span></label>
+          </div>
+        </details>
+
+        <details class="template-category">
+          <summary>📚 Productivity & Learning</summary>
+          <div class="template-category-content">
+            <label><input type="checkbox" value="Study for 20 minutes" data-template><span
+                class="template-item-text">Study for 20 minutes<small>Focus on one subject for a short study
+                  session.</small></span></label>
+            <label><input type="checkbox" value="Review my notes" data-template><span class="template-item-text">Review
+                my notes<small>Go over important information from your lessons.</small></span></label>
+            <label><input type="checkbox" value="Learn something new" data-template><span
+                class="template-item-text">Learn something new<small>Explore a topic or skill you find
+                  interesting.</small></span></label>
+            <label><input type="checkbox" value="Practice a language" data-template><span
+                class="template-item-text">Practice a language<small>Spend time reading, listening, or learning
+                  vocabulary.</small></span></label>
+            <label><input type="checkbox" value="Complete one important task" data-template><span
+                class="template-item-text">Complete one important task<small>Make progress on something that matters
+                  today.</small></span></label>
+            <label><input type="checkbox" value="Organize my workspace" data-template><span
+                class="template-item-text">Organize my workspace<small>Clear away clutter and prepare your work
+                  area.</small></span></label>
+            <label><input type="checkbox" value="Prepare for tomorrow" data-template><span
+                class="template-item-text">Prepare for tomorrow<small>Get things ready for the next
+                  day.</small></span></label>
+            <label><input type="checkbox" value="Check upcoming deadlines" data-template><span
+                class="template-item-text">Check upcoming deadlines<small>See which assignments or tasks are due
+                  soon.</small></span></label>
+            <label><input type="checkbox" value="Break a big task into smaller steps" data-template><span
+                class="template-item-text">Break a big task into smaller steps<small>Turn a large task into smaller,
+                  manageable actions.</small></span></label>
+          </div>
+        </details>
+
+        <details class="template-category">
+          <summary>🧹 Home & Organization</summary>
+          <div class="template-category-content">
+            <label><input type="checkbox" value="Put away my clothes" data-template><span class="template-item-text">Put
+                away my clothes<small>Return clean clothes to their proper place.</small></span></label>
+            <label><input type="checkbox" value="Clean my desk" data-template><span class="template-item-text">Clean my
+                desk<small>Remove clutter and tidy your desk surface.</small></span></label>
+            <label><input type="checkbox" value="Organize my backpack" data-template><span
+                class="template-item-text">Organize my backpack<small>Arrange your school or everyday
+                  essentials.</small></span></label>
+            <label><input type="checkbox" value="Do a 5-minute tidy" data-template><span class="template-item-text">Do a
+                5-minute tidy<small>Spend five minutes putting things back in place.</small></span></label>
+            <label><input type="checkbox" value="Help with a household task" data-template><span
+                class="template-item-text">Help with a household task<small>Contribute to one small job around the
+                  home.</small></span></label>
+            <label><input type="checkbox" value="Keep my space organized" data-template><span
+                class="template-item-text">Keep my space organized<small>Put things away and maintain a tidy
+                  environment.</small></span></label>
+            <label><input type="checkbox" value="Wash the dishes" data-template><span class="template-item-text">Wash
+                the dishes<small>Clean the dishes after a meal.</small></span></label>
+            <label><input type="checkbox" value="Take out the trash" data-template><span class="template-item-text">Take
+                out the trash<small>Empty the bin when it needs taking out.</small></span></label>
+          </div>
+        </details>
+
+        <details class="template-category">
+          <summary>🧠 Mindfulness & Personal Growth</summary>
+          <div class="template-category-content">
+            <label><input type="checkbox" value="Write down something positive" data-template><span
+                class="template-item-text">Write down something positive<small>Record one good moment or thought from
+                  your day.</small></span></label>
+            <label><input type="checkbox" value="Reflect on my day" data-template><span
+                class="template-item-text">Reflect on my day<small>Think about what happened and what you
+                  learned.</small></span></label>
+            <label><input type="checkbox" value="Practice gratitude" data-template><span
+                class="template-item-text">Practice gratitude<small>Notice something you appreciate
+                  today.</small></span></label>
+            <label><input type="checkbox" value="Spend time on a hobby" data-template><span
+                class="template-item-text">Spend time on a hobby<small>Make room for an activity you
+                  enjoy.</small></span></label>
+            <label><input type="checkbox" value="Connect with a friend" data-template><span
+                class="template-item-text">Connect with a friend<small>Send a message or spend time talking with
+                  someone.</small></span></label>
+            <label><input type="checkbox" value="Take a quiet moment" data-template><span
+                class="template-item-text">Take a quiet moment<small>Pause briefly and enjoy some peace and
+                  quiet.</small></span></label>
+            <label><input type="checkbox" value="Write down something I learned" data-template><span
+                class="template-item-text">Write down something I learned<small>Save a useful idea or new piece of
+                  knowledge.</small></span></label>
+            <label><input type="checkbox" value="Practice mindful breathing" data-template><span
+                class="template-item-text">Practice mindful breathing<small>Take a moment to focus on your
+                  breathing.</small></span></label>
+          </div>
+        </details>
+
+        <details class="template-category">
+          <summary>📱 Digital Life</summary>
+          <div class="template-category-content">
+            <label>
+              <input type="checkbox" value="Organize my phone apps" data-template data-recently-added="true">
+              <span class="template-item-text">
+                Organize my phone apps
+                <small>Arrange your apps so they are easier to find.</small>
+              </span>
+            </label>
+
+            <label>
+              <input type="checkbox" value="Delete unnecessary screenshots" data-template data-recently-added="true">
+              <span class="template-item-text">
+                Delete unnecessary screenshots
+                <small>Review your screenshots and remove ones you no longer need.</small>
+              </span>
+            </label>
+          </div>
+        </details>
+
+        <details class="template-category">
+          <summary>🧺 Daily Responsibilities</summary>
+          <div class="template-category-content">
+            <label>
+              <input type="checkbox" value="Pack my everyday essentials" data-template data-recently-added="true">
+              <span class="template-item-text">
+                Pack my everyday essentials
+                <small>Gather the things you need before heading out.</small>
+              </span>
+            </label>
+
+            <label>
+              <input type="checkbox" value="Check the weather for tomorrow" data-template data-recently-added="true">
+              <span class="template-item-text">
+                Check the weather for tomorrow
+                <small>Look at the forecast and plan accordingly.</small>
+              </span>
+            </label>
+          </div>
+        </details>
+
+
+      </div>
+
+
+      <details class="template-category my-templates-category" id="myTemplatesCategory" hidden>
+        <summary>👤 My Templates</summary>
+
+        <div class="template-category-content">
+          <button type="button" id="openMyTemplateEditor">
+            + Create Template
+          </button>
+
+          <div id="myTemplateEditor" hidden>
+            <input type="text" id="myTemplateTitle" placeholder="Template name" maxlength="80">
+
+            <textarea id="myTemplateDescription" placeholder="Description (optional)" maxlength="180"></textarea>
+
+            <input type="text" id="myTemplateCategory" placeholder="Category" value="Personal" maxlength="40">
+
+            <button type="button" id="saveMyTemplate">
+              Save Template
+            </button>
+
+            <button type="button" id="cancelMyTemplate">
+              Cancel
+            </button>
+          </div>
+
+          <div id="myTemplatesList"></div>
+        </div>
+      </details>
+
+
+      <div class="template-dialog-footer">
+        <button type="button" id="addSelectedTemplates">
+          Add Selected
+        </button>
+      </div>
+    </div>
+
+    <div class="btns">
+      <button class="bad" id="tDel" data-act="delTask" data-i18n="del">Delete</button>
+      <button data-act="close" data-i18n="canc">Cancel</button>
+      <button class="pri" id="saveTaskButton" data-act="saveTask" data-i18n="save">Save</button>
+    </div>
+  </dialog>
+
+
+  <dialog id="goalDlg">
+    <h3 data-i18n="wg">Weekly goal &amp; reward</h3>
+    <label><span data-i18n="g">Goal</span>: <b id="gVal">80%</b></label>
+    <input id="gRange" type="range" min="10" max="100" step="5">
+    <input id="gReward" placeholder="Your reward (e.g. Order pizza 🍕)" maxlength="60">
+    <div class="btns"><button data-act="close" data-i18n="ca">Cancel</button><button class="pri" data-act="saveGoal"
+        data-i18n="sav">Save</button></div>
+  </dialog>
+
+  <dialog id="authDlg">
+    <h3 data-i18n="accountTitle">🔥 Consistly Account</h3>
+
+    <input id="authUsername" type="text" data-i18n-placeholder="usernamePlaceholder" placeholder="Benutzername"
+      maxlength="20">
+
+    <input id="authEmail" type="email" data-i18n-placeholder="emailPlaceholder" placeholder="E-Mail">
+
+    <input id="authPassword" type="password" data-i18n-placeholder="passwordPlaceholder" placeholder="Passwort"
+      minlength="8">
+
+    <p id="authMessage" aria-live="polite"></p>
+
+    <div class="btns">
+      <button type="button" data-act="close" data-i18n="close">Schließen</button>
+      <button type="button" class="pri" data-act="signIn">
+        <span data-i18n="signInButton">Anmelden</span>
+      </button>
+      <button type="button" class="pri" data-act="signUp">
+        <span data-i18n="signUpButton">Registrieren</span>
+      </button>
+    </div>
+  </dialog>
+  <dialog id="resDlg">
+    <div id="resBody"></div>
+    <div class="btns"><button class="pri" id="resOk" data-i18n="cont">Continue</button></div>
+  </dialog>
+
+  <dialog id="achievementsDlg" class="modal">
+    <div class="modal-content achievements-modal">
+
+      <h2 data-i18n="achievementsHeading">🏆 Achievements</h2>
+      <p data-i18n="achievementsIntro">Deine Erfolge und Meilensteine in Consistly.</p>
+
+      <div id="achievementSummary">
+        0 von 0 freigeschaltet
+      </div>
+
+      <div id="achievementsList">
+        <!-- Achievements werden hier eingefügt -->
+      </div>
+
+      <button type="button" id="closeAchievements">
+        <span data-i18n="closeAchievements">Schließen</span>
+      </button>
+
+    </div>
+  </dialog>
+  <dialog id="resetPasswordDlg" class="modal">
+    <div class="modal-content">
+      <h2 data-i18n="newPasswordTitle">🔐 Neues Passwort</h2>
+      <p data-i18n="newPasswordIntro">Lege ein neues Passwort für deinen Account fest.</p>
+
+      <input type="password" id="newPassword" data-i18n-placeholder="newPasswordPlaceholder"
+        placeholder="Neues Passwort" minlength="8" autocomplete="new-password">
+
+      <input type="password" id="confirmPassword" data-i18n-placeholder="repeatPasswordPlaceholder"
+        placeholder="Passwort wiederholen" minlength="8" autocomplete="new-password">
+
+      <button type="button" id="saveNewPassword">
+        <span data-i18n="saveNewPasswordLabel">Passwort speichern</span>
+      </button>
+
+      <p id="resetMessage"></p>
+    </div>
+  </dialog>
+
+
+  <dialog id="friendsDlg" class="modal">
+    <div class="modal-content">
+      <h2 data-i18n="friendsTitle">👥 Freunde</h2>
+
+      <input type="search" id="friendSearchInput" data-i18n-placeholder="searchUsernamePlaceholder"
+        placeholder="Username suchen ..." maxlength="20" autocomplete="off">
+
+      <div id="friendSearchResults"></div>
+
+      <h3 data-i18n="incomingTitle">📩 Eingehende Anfragen</h3>
+      <div id="incomingRequests"></div>
+
+      <h3 data-i18n="outgoingTitle">📤 Gesendete Anfragen</h3>
+      <div id="outgoingRequests"></div>
+
+      <h3 data-i18n="yourFriends">🤝 Deine Freunde</h3>
+      <div id="friendsList"></div>
+      <hr>
+
+      <h3 data-i18n="blockedTitle">🚫 Blockierte Nutzer</h3>
+      <div id="blockedUsersList">
+        <p data-i18n="noBlocked">Keine blockierten Nutzer geladen.</p>
+      </div>
+      <button type="button" id="closeFriends">
+        <span data-i18n="close">Schließen</span>
+      </button>
+    </div>
+  </dialog>
+
+  <dialog id="friendProgressDlg" class="modal">
+    <div class="modal-content friend-progress-content">
+      <div class="social-heading">
+        <div>
+          <h2 id="friendProgressTitle" data-i18n="friendProgressTitle">📊 Friend progress</h2>
+          <p id="friendProgressIntro" class="settings-desc"></p>
+        </div>
+        <button type="button" id="closeFriendProgress" aria-label="Close">✕</button>
+      </div>
+      <div id="friendProgressBody" aria-live="polite"></div>
+    </div>
+  </dialog>
+
+  <dialog id="socialDlg" class="modal social-dialog">
+    <div class="modal-content">
+      <div class="social-heading">
+        <div>
+          <h2 data-i18n="social">💬 Social</h2>
+          <p class="settings-desc" data-i18n="privateChats">Deine privaten Chats mit Freunden</p>
+        </div>
+        <button type="button" id="closeSocial" aria-label="Schließen">✕</button>
+      </div>
+      <div class="social-layout">
+        <aside class="social-chat-switcher">
+          <div>
+            <h3 data-i18n="friendsTitle">Friends</h3>
+            <div id="socialFriendList" class="social-friends">
+              <p data-i18n="socialLoadingFriends">Freunde werden geladen …</p>
+            </div>
+          </div>
+          <div>
+            <h3 data-i18n="socialGroupsTitle">👥 Groups</h3>
+            <div id="socialGroupList" class="social-group-chat-list"></div>
+          </div>
+        </aside>
+        <section class="social-chat">
+          <div id="chatHeader" class="chat-header" data-i18n="socialChooseFriend">Wähle einen Freund aus, um zu chatten.
+          </div>
+          <div id="chatMessages" class="chat-messages" aria-live="polite"></div>
+          <section id="groupGoalsPanel" class="group-goals-panel" hidden>
+            <h3 data-i18n="socialGroupGoalsTitle">🎯 Group goals</h3>
+            <form id="socialGroupGoalForm" class="social-group-goal-form">
+              <input id="socialGroupGoalName" maxlength="80" required
+                data-i18n-placeholder="socialGroupGoalNamePlaceholder" placeholder="Goal name">
+              <input id="socialGroupGoalDescription" maxlength="240"
+                data-i18n-placeholder="socialGroupGoalDescriptionPlaceholder" placeholder="Description (optional)">
+              <div><label for="socialGroupGoalTarget" data-i18n="socialGroupGoalTargetLabel">Target</label><input
+                  id="socialGroupGoalTarget" type="number" min="1" max="10000" value="10" required></div>
+              <div><label for="socialGroupGoalDate" data-i18n="socialGroupGoalDateLabel">Target date</label><input
+                  id="socialGroupGoalDate" type="date" required></div>
+              <button type="submit" data-i18n="socialCreateGroupGoal">Create group goal</button>
+            </form>
+            <p id="socialGroupGoalStatus" class="settings-desc" aria-live="polite"></p>
+            <div id="socialGroupGoalsList"></div>
+          </section>
+          <form id="chatForm" class="chat-form" hidden>
+            <input id="chatMessageInput" maxlength="2000" data-i18n-placeholder="writeMessage"
+              placeholder="Nachricht schreiben …" autocomplete="off" required>
+            <button type="submit" class="pri" data-i18n="send">Senden</button>
+          </form>
+        </section>
+        <aside id="socialGroupMembersSidebar" class="social-group-members-sidebar" hidden>
+          <h3 data-i18n="socialGroupMembersManage">Group members</h3>
+          <div id="socialGroupMemberRoster" aria-live="polite"></div>
+          <section class="social-group-activity">
+            <h3 data-i18n="groupActivityHeading">⚡ Group activity</h3>
+            <div id="socialGroupActivityFeed" aria-live="polite"></div>
+          </section>
+        </aside>
+      </div>
+      <p id="socialStatus" class="settings-desc" aria-live="polite"></p>
+    </div>
+  </dialog>
+
+  <dialog id="socialGroupManageDlg" class="modal">
+    <form id="socialGroupProfileForm" class="modal-content social-group-manage-form">
+      <div class="social-heading">
+        <h2 data-i18n="socialGroupManageTitle">⚙️ Manage group</h2><button type="button" id="closeSocialGroupManage"
+          aria-label="Close">✕</button>
+      </div>
+      <input id="managedSocialGroupId" type="hidden">
+      <label for="managedSocialGroupName" data-i18n="socialGroupNameLabel">Group name</label><input
+        id="managedSocialGroupName" maxlength="60" required>
+      <label for="managedSocialGroupDescription" data-i18n="socialGroupDescriptionLabel">Description</label><textarea
+        id="managedSocialGroupDescription" maxlength="240" rows="3"></textarea>
+      <label for="managedSocialGroupIcon" data-i18n="socialGroupIconLabel">Group icon (emoji)</label><input
+        id="managedSocialGroupIcon" maxlength="16" required>
+      <label for="managedSocialGroupBanner" data-i18n="socialGroupBannerLabel">Banner image URL (https)</label><input
+        id="managedSocialGroupBanner" type="url" maxlength="1000" placeholder="https://…">
+      <div id="socialGroupMembersManage"></div>
+      <section class="social-group-invite-tools">
+        <h3 data-i18n="groupInviteHeading">🔗 Invite link</h3><label for="socialGroupInviteExpiry"
+          data-i18n="groupInviteExpiry">Link expires in</label><select id="socialGroupInviteExpiry">
+          <option value="24" data-i18n="groupInviteOneDay">1 day</option>
+          <option value="168" data-i18n="groupInviteSevenDays">7 days</option>
+          <option value="720" data-i18n="groupInviteThirtyDays">30 days</option>
+        </select><button type="button" id="createSocialGroupInvite" data-i18n="groupInviteCreate">Create invite
+          link</button><input id="socialGroupInviteLink" readonly hidden><button type="button"
+          id="copySocialGroupInvite" hidden data-i18n="groupInviteCopy">Copy link</button><small
+          id="socialGroupInviteStatus" aria-live="polite"></small>
+      </section>
+      <p id="socialGroupManageStatus" class="settings-desc" aria-live="polite"></p>
+      <div class="btns"><button type="button" id="cancelSocialGroupManage" data-i18n="cancel">Cancel</button><button
+          type="submit" class="pri" data-i18n="socialGroupSaveProfile">Save group profile</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="reportDlg" class="modal">
+    <form id="reportForm" class="modal-content">
+      <h2 data-i18n="reportTitle">⚑ Nachricht melden</h2>
+      <p data-i18n="reportIntro">Wähle einen Grund und beschreibe den Vorfall kurz.</p>
+      <label for="reportCategory" data-i18n="reportCategory">Kategorie</label>
+      <select id="reportCategory" required>
+        <option value="insult" data-i18n="catInsult">Beleidigung oder Belästigung</option>
+        <option value="nsfw" data-i18n="catNsfw">Sexuelle / NSFW-Inhalte</option>
+        <option value="threat" data-i18n="catThreat">Drohung oder Gewalt</option>
+        <option value="hate" data-i18n="catHate">Hassrede oder Diskriminierung</option>
+        <option value="spam" data-i18n="catSpam">Spam oder Betrug</option>
+        <option value="other" data-i18n="catOther">Sonstiger Grund</option>
+      </select>
+      <label for="reportReason" data-i18n="reportDescription">Beschreibung</label>
+      <textarea id="reportReason" maxlength="500" minlength="3" rows="4" required
+        data-i18n-placeholder="reportPlaceholder" placeholder="Was ist passiert?"></textarea>
+      <div class="btns">
+        <button type="button" id="cancelReport" data-i18n="cancel">Abbrechen</button>
+        <button type="submit" class="pri" id="submitReport" data-i18n="sendReport">Meldung senden</button>
+      </div>
+      <p id="reportStatus" aria-live="polite"></p>
+    </form>
+  </dialog>
+
+  <dialog id="socialReportDlg" class="modal">
+    <form id="socialReportForm" class="modal-content">
+      <h2 data-i18n="socialReportTitle">⚑ Report profile or post</h2>
+      <p data-i18n="reportIntro">Choose a reason and briefly describe what happened.</p>
+      <label for="socialReportCategory" data-i18n="reportCategory">Category</label>
+      <select id="socialReportCategory" required>
+        <option value="insult" data-i18n="catInsult">Insult or harassment</option>
+        <option value="nsfw" data-i18n="catNsfw">Sexual / NSFW content</option>
+        <option value="threat" data-i18n="catThreat">Threat or violence</option>
+        <option value="hate" data-i18n="catHate">Hate speech or discrimination</option>
+        <option value="spam" data-i18n="catSpam">Spam or scam</option>
+        <option value="other" data-i18n="catOther">Other</option>
+      </select>
+      <label for="socialReportReason" data-i18n="reportDescription">Description</label>
+      <textarea id="socialReportReason" maxlength="500" minlength="3" rows="4" required
+        data-i18n-placeholder="reportPlaceholder" placeholder="What happened?"></textarea>
+      <p id="socialReportStatus" class="settings-desc" aria-live="polite"></p>
+      <div class="btns"><button type="button" id="cancelSocialReport" data-i18n="cancel">Cancel</button><button
+          type="submit" class="pri" id="submitSocialReport" data-i18n="sendReport">Send report</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="shopPreviewDlg" class="modal shop-preview-dialog">
+    <div class="modal-content">
+      <div class="social-heading">
+        <h2 id="shopPreviewTitle"></h2><button type="button" id="closeShopPreview" aria-label="Close">✕</button>
+      </div>
+      <div id="shopPreviewContent" class="shop-preview-content"></div>
+    </div>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
+
+
+
+
+  <script>
+    (() => {
+      const menu = document.getElementById("settingsMenu");
+      const toggle = document.getElementById("settingsMenuToggle");
+      const closeButton = document.getElementById("closeSettingsMenu");
+      const backdrop = document.getElementById("settingsMenuBackdrop");
+
+      if (!menu || !toggle || !closeButton || !backdrop) {
+        console.error("Settings menu elements missing.");
+        return;
+      }
+
+      function openMenu() {
+        menu.classList.add("is-open");
+        menu.setAttribute("aria-hidden", "false");
+        toggle.setAttribute("aria-expanded", "true");
+        backdrop.hidden = false;
+      }
+
+      function closeMenu() {
+        menu.classList.remove("is-open");
+        menu.setAttribute("aria-hidden", "true");
+        toggle.setAttribute("aria-expanded", "false");
+        backdrop.hidden = true;
+      }
+
+      toggle.addEventListener("click", () => {
+        if (menu.classList.contains("is-open")) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+
+      closeButton.addEventListener("click", closeMenu);
+      backdrop.addEventListener("click", closeMenu);
+
+      // Settings-Menüpunkt
+      menu.addEventListener("click", event => {
+        const button = event.target.closest(
+          '[data-act="tab"][data-v]'
+        );
+
+        if (!button) return;
+
+        closeMenu();
+      });
+
+      document.addEventListener("keydown", event => {
+        if (
+          event.key === "Escape" &&
+          menu.classList.contains("is-open")
+        ) {
+          closeMenu();
+        }
+      });
+
+      console.log("⚙️ Settings menu ready!");
+    })();
+  </script>
+
+
+
+
+</body>
+
+</html>
